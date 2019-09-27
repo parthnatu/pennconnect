@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>PennConnect</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="signin.css" rel="stylesheet">	
+	<!-- Bootstrap Date-Picker Plugin -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+  </head>
+  <body>
+  <div class="container">
+	  <div class="row">
+		  <div class="col">
+			<h1 class="form-text-align">Welcome to PennConnect!</h1> 
+		  </div>
+	  </div>
+	  <div class="row">
+		  <div class="col-6">
+			<form class="form-signin">
+			  <h1 class="h3 mb-3 font-weight-normal form-text-align">Please sign in</h1>
+			  <div class="form-group">
+				<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+			  </div>
+			  <div class="form-group">
+				<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+			  </div>
+			  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+			</form>
+		  </div>
+		  <div class="col-6">
+			<form class="form-signin" id="formSignUp" method="POST" role="form">
+			  <h1 class="h3 mb-3 font-weight-normal form-text-align">Create a new account</h1>
+			  <div class="form-group">
+				<input type="text" id="inputFirstName" class="form-control" placeholder="First name" required autofocus>
+			  </div>
+			  <div class="form-group">
+				<input type="text" id="inputLastName" class="form-control" placeholder="Last name" required autofocus>
+			  </div>
+			  <div class="form-group">
+				<input type="email" id="inputEmailAddr" class="form-control" placeholder="Email address" required autofocus>
+			  </div>
+			  <div class="form-group">
+				<input type="password" id="inputPswd" class="form-control" placeholder="Password" required>
+			  </div>
+			  <div class="form-group">
+				<label for="inputDateOfbirth">Date of Birth</label>
+				<input class="form-control" id="inputDateOfbirth" name="dateofbirth" placeholder="MM/DD/YYY" type="text"/>
+			  </div>
+			  <div class="form-group">
+			    <label for="gender">Gender</label>
+				<div class="d-block">
+					<div class="custom-control custom-radio custom-control-inline">
+					  <input type="radio" class="custom-control-input" id="inputGenderMale" name="genderMale">
+					  <label class="custom-control-label" for="inputGenderMale">Male</label>
+					</div>
+					<div class="custom-control custom-radio custom-control-inline">
+					  <input type="radio" class="custom-control-input" id="inputGenderFemale" name="genderFemale">
+					  <label class="custom-control-label" for="inputGenderFemale">Female</label>
+					</div>
+				</div>
+			  </div>
+			  <button class="btn btn-lg btn-primary btn-block" type="submit" id="buttonSubmit">Sign up!</button>
+			</form>
+		  </div>  
+	  </div>
+  </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+	<script src="signin.js" charset="UTF-8"></script>
+  </body>
+</html>
