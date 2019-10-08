@@ -4,7 +4,7 @@ $(function () {
 	var sDateofBirth = $('input[name="dateofbirth"]'); 
 	var container = $(".container").length > 0 ? $(".container").parent() : "body";
 	var options = {
-		format: "mm/dd/yyyy",
+		format: "yyyy-mm-dd",
 		container: container,
 		todayHighlight: true,
 		autoclose: true,
@@ -12,21 +12,29 @@ $(function () {
 	sDateofBirth.datepicker(options);	
 	
 	$("#formSignUp").on("submit", function (e) {
+		console.log('clicked on sign up!');
 		var data = {
 			FirstName: $("#inputFirstName").val(),
 			LastName: $("#inputLastName").val(),
 			Email: $("#inputEmailAddr").val(),
-			Password: CryptoJS.SHA1($("#inputPswd").val()).toString(),
-			DateOfBirth: $("#inputDateOfbirth").data().datepicker.viewDate,
-			Gender: $("#inputGenderMale")[0].checked ? "Male" : "Female"
+			Password: $("#inputPswd").val().toString(),
+			DateOfBirth: $("#inputDateOfbirth").data().datepicker.getDate(),
+			Gender: $("#inputGenderMale")[0].checked ? "m" : "f"
 		};
+		console.log(data);
 		$.ajax({
             type: "POST",
-            url: url,
+            url: "http://40.121.195.146:8000/api-gateway.php/penn-connect/user",
             data: data,
-            success: function (data) {
-                   
-            }
+	    dataType: "json",
+            success: function () {
+                   console.log("user signed up!");
+            },
+	    error: function(xhr, resp, text) {
+                    console.log(xhr, resp, text);
+	    }
+
+
         });     
 	});
 });
