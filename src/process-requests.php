@@ -11,7 +11,15 @@ function showUsers() {
 	#echo json_encode($resp);
 	return $resp;
 }
-function login(){
+
+function createNewPost() {
+	$input = (array) json_decode(file_get_contents('php://input'), TRUE);
+	$user_id = getSessionUserId($input['session_token']);
+	$ret = insertPost($user_id, $input['text'], $input['media_url'], $input['time'], $input['date'], $input['upvotes'], $input['downvotes']);
+	return $ret;
+}
+
+function login() {
 	$input = (array) json_decode(file_get_contents('php://input'), TRUE);
 	$email = $input['email'];
 	$password = $input['password'];
@@ -32,12 +40,14 @@ function login(){
         	}
 	}
 }
-function logout(){
+
+function logout() {
 	$input = (array) json_decode(file_get_contents('php://input'), TRUE);
 	$session_token = $input['session_token'];
 	$ret = logoutUser($session_token);
 	return $ret;
 }
+
 function addNewUser() {
 	#echo "Need to create user: ";
 	$input = (array) json_decode(file_get_contents('php://input'), TRUE);
@@ -66,6 +76,8 @@ function processPostRequest($requestType) {
 	case 'logout':
 		return logout();
 		break;
+	case 'post':
+		return (createNewPost());
 	default:
 		notFoundResponse();
 	}
@@ -92,7 +104,7 @@ function processRequest($requestMethod, $requestType)
 		break;
 	case 'POST':
 		$response['status_code_header'] = "HTTP/1.1 200 OK";
-		$response['body'] = processPostRequest($requestType);
+		$response['status'] = processPostRequest($requestType);
 		break;
 	case 'PUT':
 		$response = processPutRequest($request);

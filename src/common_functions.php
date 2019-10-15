@@ -37,8 +37,9 @@ function insertInTable($conn, $query) {
 }
 
 function createNewUser($fname, $lname, $gender, $email, $passwd, $nationality, $date) {
+	$hashed_passwd = sha1($passwd);
 	$new_query = "INSERT INTO user (fname, lname, gender, email, passwd, nationality, dob)
-		      VALUES('$fname', '$lname', '$gender', '$email', '$passwd', '$nationality', '$date')";
+		      VALUES('$fname', '$lname', '$gender', '$email', '$hashed_passwd', '$nationality', '$date')";
 	#echo "Query: $new_query\n";
 	global $servername, $username, $password, $db;
 	$connID = createConnection($servername, $username, $password, $db);
@@ -125,6 +126,40 @@ function logoutUser($session_token){
 		closeConnection($connID);
 		return $connID->error;
 	}
+}
+
+function getUserID($connID, $sessionToken) {
+	$new_query = "SELECT user_id FROM session WHERE session_token='$sessionToken'";
+	$result = $connID->query($new_query);
+	if($result->num_rows > 0) {
+		#We have a valid user!!
+		$fetchedRow = mysqli_fetch_assoc($result);
+		$userID = $fetchedRow['user_id'];
+	}
+	else {
+		#invalid user
+		$userID = -1;
+	}
+	return $userID;
+}
+
+function getSessionUserId($sessionToken) {
+	global $servername, $username, $password, $db;
+	$connID = createConnection($servername, $username, $password, $db);
+	$userID = getUserID($connID, $sessionToken);
+	closeConnection($connID);
+	return $userID;
+}
+
+function insertPost($user_id, $text, $media_url, $time, $date, $upvotes, $downvotes) {
+	global $servername, $username, $password, $db;
+	$new_query = "INSERT INTO posts (user_id, text, media_url, time, date, upvotes, downvotes)
+		      VALUES('$user_id', '$text', '$media_url', '$time', '$date', '$upvotes', '$downvotes')";
+	$connID = createConnection($servername, $username, $password, $db);
+	$ret = insertInTable($connID, $new_query);
+	closeConnection($connID);
+	return $ret;
+
 }
 #echo "Exiting....<br>";
 ?>
