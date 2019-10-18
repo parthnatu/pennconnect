@@ -39,8 +39,8 @@ $(function () {
 	$("#formSignIn").on("submit", function (e) {
 		e.preventDefault(); 
 		var data = {
-			Email: $("#inputEmailAddr").val(),
-			Password: $("#inputPswd").val().toString()
+			email: $("#inputEmail").val(),
+			password: $("#inputPassword").val().toString()
 		};
 		$.ajax({
             type: "POST",
