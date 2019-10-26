@@ -1,5 +1,20 @@
 $(function () {
   'use strict'
+
+  //To get the post ids
+  //tinymeercat385@psu.edu
+  //passwd
+  $.ajax({
+       type: "POST",
+       url: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/newsfeed",
+       success: function (e) {
+			
+       },
+	   error: function(xhr, resp, text) {
+				
+	   }
+  });
+  //getpost - json data for each post
   var o = [{
        src: "http://homepages.cae.wisc.edu/~ece533/images/girl.png",
        name: "Soundarya Nurani Sundareswara",
@@ -107,7 +122,59 @@ $(function () {
 		customCardDiv.appendChild(cardFooterDiv);
 		
 		return customCardDiv;
-  }  
+  }
+  
+  $('#createModalId').on('show.bs.modal', function (e) {
+	  var button = $(e.relatedTarget);
+	  var dataObj = button.data('post');
+	  var modal = $(this);
+	  modal.find('.modal-title').text('Create post');
+  });
+  
+  $('#createPostBtn').on('click', function(e) {
+	  var postData = $('#postTextareaId').val();
+	  var data = {
+			text: $('#postTextareaId').val(),
+			media_url: "",
+			date: new Date().toJSON().slice(0,10).split('-').join('-'),
+			time: new Date().toJSON().slice(11, 19),
+			upvotes: 0,
+			downvotes: 0
+	  };
+	  $.ajax({
+       type: "POST",
+	   data: data,
+       url: "http://40.121.195.146:8000/api-gateway.php/penn-connect/post",
+       success: function (e) {
+			
+       },
+	   error: function(xhr, resp, text) {
+				
+	   }
+	 });
+  });
+  
+  $("#logoutId").on('click', function(e) {
+	var url = getUrl().logout;
+	$.ajax({
+       type: "POST",
+       url: url,
+       success: function (e) {
+			window.location = '../signin/index.html';
+       },
+	   error: function(xhr, resp, text) {
+				
+	   }
+	});  
+  });
+  
+  function getUrl() {
+	var url = {
+		postids: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/newsfeed",
+		logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout"
+	};
+	return url;
+  }
 /*$('#loading-image').bind('ajaxStart', function(){
     $(this).show();
 }).bind('ajaxStop', function(){

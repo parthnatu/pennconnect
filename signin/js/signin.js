@@ -24,7 +24,7 @@ $(function () {
 		};
 		$.ajax({
             type: "POST",
-            url: "http://40.121.195.146:8000/api-gateway.php/penn-connect/user",
+            url: getUrl().signup,
             data: JSON.stringify(data),
             success: function () {
 				$('#formSignUp').get(0).reset();
@@ -42,13 +42,16 @@ $(function () {
 			email: $("#inputEmail").val(),
 			password: $("#inputPassword").val().toString()
 		};
+		var url = 
 		$.ajax({
             type: "POST",
-            url: "http://40.121.195.146:8000/api-gateway.php/penn-connect/login",
+            url: getUrl().login,
             data: JSON.stringify(data),
             success: function () {
 				$("#alert").hide();
 				$('#formSignIn').get(0).reset();
+				//url = new URL(window.location.href)
+				//url.searchParams.append("hello","1")
                 window.location = '../newsfeed/index.html';
             },
 			error: function(xhr, resp, text) {
@@ -56,4 +59,12 @@ $(function () {
 			}
         });     
 	});
+	
+	function getUrl() {
+		var url = {
+			login: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/login",
+			signup: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/user"			
+		};
+		return url;
+	}
 });
