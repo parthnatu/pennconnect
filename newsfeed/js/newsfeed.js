@@ -303,7 +303,6 @@ $(function () {
 			type: "POST",
 			url: url,
 			success: function (e) {
-				window.location = '../signin/index.html';
 			},
 			error: function (xhr, resp, text) {
 
