@@ -16,10 +16,10 @@ $(function () {
 	});
 
 	function getPostContent() {
+		var data = {
+                                post_ids: []
+                        };
 		if (postsDisplayed < arrPostIds.length - 1) {
-			var data = {
-				post_ids: []
-			};
 			var total = postsDisplayed + 10;
 			while (postsDisplayed < total) {
 				data.post_ids.push(arrPostIds[postsDisplayed]);
@@ -27,13 +27,16 @@ $(function () {
 			}
 			$.ajax({
 				type: "POST",
-				data: data,
+				data: JSON.stringify(data),
 				url: getUrl().postcontent,
 				success: function (e) {
 					var item;
-					var postContents = JSON.parse(e.body);
-					postContents.forEach(function (item) {
-						$("#newsfeedCards")[0].appendChild(buildCard(item));
+					console.log(e.body);
+					//var postContents = JSON.parse(e.body);
+					e.body.forEach(function (item) {
+						if(item.text.trim() != ""){
+							$("#newsfeedCards")[0].appendChild(buildCard(item));
+						}
 					});
 				},
 				error: function (xhr, resp, text) {}
@@ -192,13 +195,14 @@ $(function () {
 		cardHeaderFlex.className = 'd-flex justify-content-start';
 		var img = document.createElement('img');
 		img.className = 'rounded-circle';
-		img.src = carditem.media_url;
+		var selected_number = Math.round(Math.random()*9)+1;
+		img.src = "https://randomuser.me/portraits/lego/"+selected_number+".jpg";
 		img.style = 'height: 2rem; width: 2rem;';
 		var cardHeaderNameFlex = document.createElement('div');
 		cardHeaderNameFlex.className = 'd-flex align-items-center ml-2';
 		var nameLink = document.createElement('a');
 		nameLink.className = 'card-text font-weight-normal';
-		nameLink.innerHTML = carditem.user_id;
+		nameLink.innerHTML = carditem.fname.charAt(0).toUpperCase() + carditem.fname.slice(1) + " " + carditem.lname.charAt(0).toUpperCase() + carditem.lname.slice(1);
 		cardHeaderNameFlex.appendChild(nameLink);
 		cardHeaderFlex.appendChild(img);
 		cardHeaderFlex.appendChild(cardHeaderNameFlex);
@@ -214,7 +218,12 @@ $(function () {
 		postResultDiv.className = 'd-flex flex-row';
 		var likeResultText = document.createElement('div');
 		likeResultText.className = 'font-weight-normal';
-		likeResultText.innerHTML = carditem.upvotes + ' people liked this'
+		if(carditem.upvotes >= 1000){
+			likeResultText.innerHTML = carditem.upvotes/1000 + 'k people liked this';
+		}
+		else{
+			likeResultText.innerHTML = carditem.upvotes + ' people liked this';
+		}
 		var commentResultLink = document.createElement('div');
 		commentResultLink.className = 'font-weight-normal ml-3';
 		commentResultLink.innerHTML = carditem.downvotes + ' comments';
