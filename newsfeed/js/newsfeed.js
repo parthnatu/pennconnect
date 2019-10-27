@@ -16,7 +16,7 @@ $(function () {
 	});
 
 	function getPostContent() {
-		if (postDisplayed < arrPostIds.length - 1) {
+		if (postsDisplayed < arrPostIds.length - 1) {
 			while (postsDisplayed < postsDisplayed + 10) {
 				var data = {
 					post_ids: []
