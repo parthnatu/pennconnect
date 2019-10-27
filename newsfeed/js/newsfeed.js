@@ -17,10 +17,11 @@ $(function () {
 
 	function getPostContent() {
 		if (postsDisplayed < arrPostIds.length - 1) {
-			while (postsDisplayed < postsDisplayed + 10) {
-				var data = {
-					post_ids: []
-				};
+			var data = {
+				post_ids: []
+			};
+			var total = postsDisplayed + 10;
+			while (postsDisplayed < total) {
 				data.post_ids.push(arrPostIds[postsDisplayed]);
 				postsDisplayed = postsDisplayed + 1;
 			}
