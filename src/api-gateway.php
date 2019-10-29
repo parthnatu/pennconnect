@@ -11,7 +11,7 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers");
-
+$getSpec = null;
 if (!isset($_SERVER['REQUEST_URI'])){
 	echo "Exiting Request URI not found";
 }
@@ -33,9 +33,22 @@ if (!isset($request[3])) {
 	exit();
 }
 
+if (isset($request[4])) {
+	global $getSpec;
+	$getSpec = $request[4];
+}
+
+#echo "\n\n get spec = $getSpec\n\n";
 $requestType = $request[3];
 $requestMethod = $_SERVER["REQUEST_METHOD"];
-
-processRequest($requestMethod, $requestType);
+$response = processRequest($requestMethod, $requestType, $getSpec);
+if ($response == null) {
+	header('HTTP/1.1 500 Internal Server Booboo');
+	header('Content-Type: application/json; charset=UTF-8');
+	die(json_encode(array('message' => 'ERROR', 'code' => 1337)));
+} else {
+	header('HTTP/1.1 200 OK');
+	echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_PARTIAL_OUTPUT_ON_ERROR);
+}
 
 ?>
