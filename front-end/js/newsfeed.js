@@ -56,14 +56,15 @@ $(function () {
 		url: getUrl().currentuser,
 		success: function (e) {
 			var userDetails = e.body;
-			$("#userCard")[0].appendChild(buildUserCard(userDetails));
+			//$("#userCard")[0].appendChild(buildUserCard(userDetails));
+			buildUserCard(userDetails);
 		},
 		error: function (xhr, resp, text) {}
 	});
 	
 	function buildUserCard(userDetails) {
-		var customCardDiv = document.createElement('div');
-		customCardDiv.className = 'card customCard';
+		//var customCardDiv = document.createElement('div');
+		//customCardDiv.className = 'card customCard';
 		var customCardHeaderDiv = document.createElement('div');
 		customCardHeaderDiv.className = 'card-header text-center';
 		var img = document.createElement('img');
@@ -111,11 +112,12 @@ $(function () {
 		
 		customCardBodyDiv.appendChild(flexboxDiv);
 		customCardBodyDiv.appendChild(innerDiv);
+		$("#userCard")[0].appendChild(customCardHeaderDiv);
+		$("#userCard")[0].appendChild(customCardBodyDiv);
+		//customCardDiv.appendChild(customCardHeaderDiv);
+		//customCardDiv.appendChild(customCardBodyDiv);
 		
-		customCardDiv.appendChild(customCardHeaderDiv);
-		customCardDiv.appendChild(customCardBodyDiv);
-		
-		return customCardDiv;
+		//return customCardDiv;
 	}
 
 	function buildCard(carditem) {
@@ -150,18 +152,18 @@ $(function () {
 
 		var postResultDiv = document.createElement('div');
 		postResultDiv.className = 'd-flex flex-row';
-		var likeResultText = document.createElement('div');
-		likeResultText.className = 'font-weight-normal';
+		var upvoteResultText = document.createElement('div');
+		upvoteResultText.className = 'font-weight-normal';
 		if (carditem.upvotes >= 1000) {
-			likeResultText.innerHTML = carditem.upvotes / 1000 + 'k people liked this';
+			upvoteResultText.innerHTML = carditem.upvotes / 1000 + 'k people upvoted';
 		} else {
-			likeResultText.innerHTML = carditem.upvotes + ' people liked this';
+			upvoteResultText.innerHTML = carditem.upvotes + ' people upvoted';
 		}
-		var commentResultLink = document.createElement('div');
-		commentResultLink.className = 'font-weight-normal ml-3';
-		commentResultLink.innerHTML = carditem.downvotes + ' comments';
-		postResultDiv.appendChild(likeResultText);
-		postResultDiv.appendChild(commentResultLink);
+		var downvoteResultText = document.createElement('div');
+		downvoteResultText.className = 'font-weight-normal ml-3';
+		downvoteResultText.innerHTML = carditem.downvotes + ' people downvoted';
+		postResultDiv.appendChild(upvoteResultText);
+		postResultDiv.appendChild(downvoteResultText);
 
 		var postActionDiv = document.createElement('div');
 		postActionDiv.className = 'd-flex flex-row';
@@ -222,9 +224,8 @@ $(function () {
 	$('#createPostBtn').on('click', function (e) {
 		var postData = $('#postTextareaId').val();
 		var d = new Date,
-    			dformat = [d.getFullYear(),
-			d.getMonth()+1,
-                        d.getDate()].join('-')+' '+
+    			dformat = [d.getFullYear(), d.getMonth() + 1,
+                    d.getDate()].join('-')+' '+
               		[d.getHours(),
                		d.getMinutes(),
                		d.getSeconds()].join(':');

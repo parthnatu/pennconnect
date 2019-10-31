@@ -74,7 +74,6 @@ require_once 'process-requests.php';
 								<div class="card-text font-weight-normal" id=""><?php echo $user_details["friend_count"]?></div>
 
 							</div>
-
 							<div>
 								<a href="#" class="font-weight-normal">Groups</a><br/>
 								<a href="#" class="font-weight-normal">Events</a>
