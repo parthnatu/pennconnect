@@ -3,7 +3,11 @@ import mysql.connector as db
 import pandas as pd
 import sys
 import random
+<<<<<<< HEAD
 NUMBER_OF_USERS = 116903;
+=======
+NUMBER_OF_USERS = 116893
+>>>>>>> ed55da6ad90b5bc00f16db197e67110a1dc565b5
 
 conn = db.connect(
         host="localhost",
