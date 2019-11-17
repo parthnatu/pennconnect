@@ -1,84 +1,27 @@
 $(function () {
 	'use strict'
-	var userProfileId = location.search.split('user_id=')[1];
-	var arrPostIds = null;
 	var postsDisplayed = 0;
 	var arrPostIds = [];
+	//tinymeercat385@psu.edu
+	//passwd
 	$.ajax({
 		type: "POST",
-		url: getUrl().userdetails,
-		data: JSON.stringify({user_id : userProfileId}),
-		success: function(e) {
-			buildUserCard(e.body);
-			document.getElementById ("btn-friend").addEventListener ("click", toggleFriend, false);
-		},
-		error: function (xhr, resp, text) {}
-	});
-	$.ajax({
-		type: "POST",
-		url: getUrl().userposts,
-		data: JSON.stringify({user_id : userProfileId}),
+		url: getUrl().postids,
 		success: function (e) {
 			arrPostIds = e.body;
 			getPostContent();
 		},
-		error: function (xhr, resp, text) {
-		}
+		error: function (xhr, resp, text) {}
 	});
-	function buildUserCard(data){
-		var htmlContent = "<div class=\"card-header text-center\"><img class=\"rounded-circle\" src=\"https://randomuser.me/portraits/lego/4.jpg\" alt=\"Card image cap\" style=\"height: 5rem; width: 5rem;\" data-holder-rendered=\"true\"><h5 class=\"card-title\">"+data.fname.charAt(0).toUpperCase() + data.fname.substring(1)+ " "+data.lname.charAt(0).toUpperCase() + data.lname.substring(1)+"</h5>";
-		var degree_type = data.degree_type;
-		var degree_statement = "";
-		if(degree_type == "MS"){
-			degree_statement = "Student at Pennsylvania State University pursuing a MS Degree in";
-		}
-		else if(degree_type == "PHD"){
-			degree_statement = "Student at Pennsylvania State University pursuing a PhD Degree in";
-		}
-		else if(degree_type == "UG"){
-			degree_statement = "Student at Pennsylvania State University pursuing an Undergraduate Degree in";
-		}
-		else{
-			degree_statement = "Student at Pennsylvania State University";
-		}
-		var grad_year = data.graduation_year;
-		var year_stmnt = "Graduating in the year "+grad_year;
-		var major = "";
-		data.major.toLowerCase().split(" ").forEach(word => major+=word.charAt(0).toUpperCase() + word.substring(1)+" ");
-		major = major.trim();
-		htmlContent += "<p class=\"font-italic\" style=\"font-size: 0.8rem;\">"+degree_statement+" "+major+"</p>";
-		htmlContent += "<p class=\"font-italic\" style=\"font-size: 0.8rem;\">"+year_stmnt+"</p>";
-		var friend_status = data.friend_status;
-		if(friend_status != null){
-			if(friend_status){
-				htmlContent += "<button id=\"btn-friend\" type=\"button\" onclick=\"toggleFriend()\" class=\"btn btn-success btn-sm\">Friends ✓</button>";
-				
-			}
-			else{
-				htmlContent += "<button id=\"btn-friend\" type=\"button\" onclick=\"toggleFriend()\" class=\"btn btn-danger btn-sm\">Friends x</button>";
 
-			}
-		}
-		if(data.editable != null){
-			if(data.editable){
-				htmlContent += "<button type=\"button\" class=\"btn btn-secondary btn-sm\">Edit</button>";
-			}
-		}
-		htmlContent += "</div>";
-		htmlContent += "<div class=\"card-body\"><div class=\"d-flex justify-content-between bg-white\"><div class=\"card-text font-weight-normal\">Connections</div><div class=\"card-text font-weight-normal\">"+data.friend_count+"</div></div><div><a href=\"#\" class=\"font-weight-normal\">Groups</a><br/><a href=\"#\" class=\"font-weight-normal\">Events</a></div></div>"
-		$("#userCard").append(htmlContent);
-
-
-	}
 	function getPostContent() {
 		var data = {
 			post_ids: []
 		};
-		if (postsDisplayed < arrPostIds.length) {
+		if (postsDisplayed < arrPostIds.length - 1) {
 			var total = postsDisplayed + 10;
-			while (postsDisplayed < arrPostIds.length) {
+			while (postsDisplayed < total) {
 				data.post_ids.push(arrPostIds[postsDisplayed]);
-				console.log(data);
 				postsDisplayed = postsDisplayed + 1;
 			}
 			$.ajax({
@@ -86,17 +29,16 @@ $(function () {
 				data: JSON.stringify(data),
 				url: getUrl().postcontent,
 				success: function (e) {
-					console.log(e);
-					var item;
 					e.body.forEach(function (item) {
-						if (item.text.trim() != "") {
-							$("#profileCards")[0].appendChild(buildCard(item));
+						
+						if(item.text != null && item.fname !=null && item.lname!=null){
+							if (item.text.trim() != "") {
+								$("#newsfeedCards")[0].appendChild(buildCard(item));
+							}
 						}
 					});
 				},
-				error: function (xhr, resp, text) {
-					console.log("didnt work.")
-				}
+				error: function (xhr, resp, text) {}
 			});
 		}
 
@@ -108,16 +50,75 @@ $(function () {
 			getPostContent();
 		}
 	});
-	function toggleFriend(){
-		$.ajax({
-			type: "POST",
-			data: JSON.stringify({friend_user_id : userProfileId}),
-			url: getUrl().togglefriend,
-			success: function (e) {
-				location.reload();
-			}
-		});
+	
+	$.ajax({
+		type: "POST",
+		url: getUrl().userdetails,
+		data: JSON.stringify({user_id : -1 }),
+		success: function (e) {
+			var userDetails = e.body;
+			$("#userCard")[0].appendChild(buildUserCard(userDetails));
+		},
+		error: function (xhr, resp, text) {}
+	});
+	
+	function buildUserCard(userDetails) {
+		var customCardDiv = document.createElement('div');
+		customCardDiv.className = 'card customCard';
+		var customCardHeaderDiv = document.createElement('div');
+		customCardHeaderDiv.className = 'card-header text-center';
+		var img = document.createElement('img');
+		img.className = 'rounded-circle';
+		img.src = 'https://randomuser.me/portraits/lego/4.jpg';
+		img.style = 'height: 5rem; width: 5rem;';
+		var cardHeaderTitle = document.createElement('h5');
+		cardHeaderTitle.className = 'card-title';
+		cardHeaderTitle.innerHTML = "<a href=\"http://pennconnect.duckdns.org:8000/user_profile.html?user_id=-1\">"+userDetails.fname.charAt(0).toUpperCase() + userDetails.fname.slice(1) + " " + userDetails.lname.charAt(0).toUpperCase() + userDetails.lname.slice(1)+"</a>";
+		var cardHeaderDesc = document.createElement('p');
+		cardHeaderDesc.className = 'font-italic';
+		cardHeaderDesc.style = 'font-size: 0.8rem;';
+		cardHeaderDesc.innerHTML = userDetails.email;
+		customCardHeaderDiv.appendChild(img);
+		customCardHeaderDiv.appendChild(cardHeaderTitle);
+		customCardHeaderDiv.appendChild(cardHeaderDesc);
+		
+		var customCardBodyDiv = document.createElement('div');
+		customCardBodyDiv.className = 'card-body';
+		
+		var flexboxDiv = document.createElement('div');
+		flexboxDiv.className = 'd-flex justify-content-between bg-white';
+		var connectionsDiv = document.createElement('div');
+		connectionsDiv.className = 'card-text font-weight-normal';
+		connectionsDiv.innerHTML = 'Connections';
+		var connectionsCountDiv = document.createElement('div');
+		connectionsCountDiv.className = 'card-text font-weight-normal';
+		connectionsCountDiv.innerHTML = userDetails.friend_count;;
+		flexboxDiv.appendChild(connectionsDiv);
+		flexboxDiv.appendChild(connectionsCountDiv);
+		
+		var innerDiv = document.createElement('div');
+		var groupsLink = document.createElement('a');
+		groupsLink.className = 'font-weight-normal';
+		groupsLink.href = '#';
+		groupsLink.innerHTML = 'Groups';
+		var breakline = document.createElement('br');
+		var eventsLink = document.createElement('a');
+		eventsLink.className = 'font-weight-normal';
+		eventsLink.href = '#';
+		eventsLink.innerHTML = 'Events';
+		innerDiv.appendChild(groupsLink);
+		innerDiv.appendChild(breakline);
+		innerDiv.appendChild(eventsLink);
+		
+		customCardBodyDiv.appendChild(flexboxDiv);
+		customCardBodyDiv.appendChild(innerDiv);
+		
+		customCardDiv.appendChild(customCardHeaderDiv);
+		customCardDiv.appendChild(customCardBodyDiv);
+		
+		return customCardDiv;
 	}
+
 	function buildCard(carditem) {
 		var customCardDiv = document.createElement('div');
 		customCardDiv.className = 'card customCard';
@@ -136,7 +137,7 @@ $(function () {
 		var nameLink = document.createElement('a');
 		nameLink.id = "friendNameLinkId";
 		nameLink.className = 'card-text font-weight-normal';
-		nameLink.innerHTML = carditem.fname.charAt(0).toUpperCase() + carditem.fname.slice(1) + " " + carditem.lname.charAt(0).toUpperCase() + carditem.lname.slice(1);
+		nameLink.innerHTML = "<a href=\"http://pennconnect.duckdns.org:8000/user_profile.html?user_id="+carditem.user_id+"\">"+carditem.fname.charAt(0).toUpperCase() + carditem.fname.slice(1) + " " + carditem.lname.charAt(0).toUpperCase() + carditem.lname.slice(1)+"</a>";
 		cardHeaderNameFlex.appendChild(nameLink);
 		cardHeaderFlex.appendChild(img);
 		cardHeaderFlex.appendChild(cardHeaderNameFlex);
@@ -207,13 +208,39 @@ $(function () {
 
 		return customCardDiv;
 	}
+	
+	$('#friendNameLinkId').on('click', function(e) {
+		
+	});
 
-	$("#editform").on('click', function (e) {
-		var url = getUrl().editform;
+	$('#createModalId').on('show.bs.modal', function (e) {
+		var button = $(e.relatedTarget);
+		var dataObj = button.data('post');
+		var modal = $(this);
+		modal.find('.modal-title').text('Create post');
+	});
+
+	$('#createPostBtn').on('click', function (e) {
+		var postData = $('#postTextareaId').val();
+		var d = new Date,
+    			dformat = [d.getFullYear(),
+			d.getMonth()+1,
+                        d.getDate()].join('-')+' '+
+              		[d.getHours(),
+               		d.getMinutes(),
+               		d.getSeconds()].join(':');
+		var data = {
+			text: $('#postTextareaId').val(),
+			timestamp: dformat
+		};
+		console.log(JSON.stringify(data));
 		$.ajax({
 			type: "POST",
-			url: url,
-			success: function (e) {},
+			data: JSON.stringify(data),
+			url: getUrl().createpost,
+			success: function (e) {
+				$('#createModalId').modal('hide');
+			},
 			error: function (xhr, resp, text) {
 
 			}
@@ -225,7 +252,9 @@ $(function () {
 		$.ajax({
 			type: "POST",
 			url: url,
-			success: function (e) {},
+			success: function (e) {
+				location.href = "http://pennconnect.duckdns.org:8000"
+			},
 			error: function (xhr, resp, text) {
 
 			}
@@ -237,12 +266,10 @@ $(function () {
 			postids: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/newsfeed",
 			postcontent: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/getpost",
 			createpost: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/post",
-			userdetails: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/userdetails",
-			editform: "",                /*Add the link to the edit form*/
-			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout",
-			userposts: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/userposts",
-			togglefriend : "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/toggle_friend"
+			userdetails: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/userdetails/",
+			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout"
 		};
 		return url;
 	}
+
 });
