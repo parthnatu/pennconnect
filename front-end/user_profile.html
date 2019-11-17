@@ -52,17 +52,9 @@ require_once 'process-requests.php';
 			<div class="row">
 				<div class="col-12">
 					<div class="card customCard" id="userCard">
-						<?php
-							$user_id = $_GET["user_id"];
-							if($user_id == "current-user"){
-								$user_id = getSessionUserId($_COOKIE['pennconnect']);
-							}
-							//echo $_COOKIE['pennconnect'];
-							$user_details = userDetails($user_id);
-						?>
 						<div class="card-header text-center">
 							<img class="rounded-circle" src="https://randomuser.me/portraits/lego/4.jpg" alt="Card image cap" style="height: 5rem; width: 5rem;" data-holder-rendered="true">
-							<h5 class="card-title"><?php echo ucwords($user_details["fname"] . " " . $user_details["lname"]) ?></h5>
+							<h5 class="card-title"></h5>
 							<p class="font-italic" style="font-size: 0.8rem;">Graduate Student at Pennsylvania State university</p>
 						</div>
 						<!--<div class="card-header">
@@ -71,9 +63,10 @@ require_once 'process-requests.php';
 						<div class="card-body">
 							<div class="d-flex justify-content-between bg-white">
 								<div class="card-text font-weight-normal">Connections</div>
-								<div class="card-text font-weight-normal" id=""><?php echo $user_details["friend_count"]?></div>
+								<div class="card-text font-weight-normal" id=""></div>
 
 							</div>
+
 							<div>
 								<a href="#" class="font-weight-normal">Groups</a><br/>
 								<a href="#" class="font-weight-normal">Events</a>
