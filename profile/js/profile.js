@@ -1,37 +1,37 @@
 $(function () {
   'use strict'
-    var sDateofBirth = $('input[name="dateofbirth"]'); 
+    	var sGraduation = $('input[name="graduation"]'); 
 	var container = $(".container").length > 0 ? $(".container").parent() : "body";
 	var options = {
-		format: "yyyy-mm-dd",
+		format: "yyyy",
 		container: container,
 		todayHighlight: true,
 		autoclose: true,
 	};
-	sDateofBirth.datepicker(options);
-    
-    $("#formSignUp").on("submit", function (e) {
+	sGraduation.datepicker(options);
+        
+	$("#formEdit").on("submit", function (e) {
 		e.preventDefault(); 
 		var data = {
         
-            DateOfBirth: $("#inputDateOfbirth").data().datepicker.getFormattedDate(),
-			Gender: $("#inputGenderMale")[0].checked ? "m" : "f",
-			Nationality: "IN"
+            		Graduation: $("#inputGradution").data().datepicker.getFormattedDate(),
+			Major: $("#inputMajor").data(),
+			About: $("#inputAbout").data()
 		};
 		$.ajax({
             type: "POST",
-            url: getUrl().signup,
+            url: getUrl().editform,
             data: JSON.stringify(data),
             success: function () {
-				$('#formSignUp').get(0).reset();
-                window.location = '../profile/edit_form.html';
+				$('#formEdit').get(0).reset();
+                		window.location = '../profile/user.html';
             },
 			error: function(xhr, resp, text) {
 				
 			}
         });     
 	});
-        
+	
     var postsDisplayed = 0;
 	var arrPostIds = [];
     $.ajax({
@@ -43,17 +43,6 @@ $(function () {
 		},
 		error: function (xhr, resp, text) {}
 	});
-  var o = [{
-       src: "http://homepages.cae.wisc.edu/~ece533/images/girl.png",
-       name: "Soundarya Nurani Sundareswara",
-       desc: "Graduate Student at Pennsylvania State university",
-	   post: "Happy Diwali :)"
-  }, {
-       src: "http://homepages.cae.wisc.edu/~ece533/images/girl.png",
-       name: "Soundarya Nurani Sundareswara",
-       desc: "Graduate Student at Pennsylvania State university",
-	   post: "Good morning!"
-  }];
  
   o.forEach(function(item) {
     $("#profileCards")[0].appendChild(buildCard(item));
@@ -162,10 +151,15 @@ $(function () {
 		var commentLink = document.createElement('a');
 		commentLink.className = 'font-weight-normal ml-3';
 		commentLink.href = '#';
+	  	var EditLink = document.createElement('a');
+		EditLink.className = 'font-weight-normal ml-3';
+		EditLink.href = '#';
+	  	EditLink.innerHTML = 'Edit'
 		commentLink.innerHTML = 'Comment';
 		postActionDiv.appendChild(upvoteLink);
 		postActionDiv.appendChild(downvoteLink);
 		postActionDiv.appendChild(commentLink);
+	  	postActionDiv.appendChild(EditLink);
 
 		cardBodyDiv.appendChild(postTextH);
 		cardBodyDiv.appendChild(postResultDiv);
@@ -194,18 +188,6 @@ $(function () {
 		return customCardDiv;
 	}
     
-    $("#editform").on('click', function (e) {
-		var url = getUrl().editform;
-		$.ajax({
-			type: "POST",
-			url: url,
-			success: function (e) {},
-			error: function (xhr, resp, text) {
-
-			}
-		});
-	});
-    
     $("#logoutId").on('click', function (e) {
 		var url = getUrl().logout;
 		$.ajax({
@@ -225,7 +207,7 @@ $(function () {
 			createpost: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/post",
 			currentuser: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/current-user/",
 			anotheruser: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/this-user/",
-            editform: "",                /*Add the link to the edit form*/
+            		editform: "",                /*Add the link to the edit form*/
 			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout"
 		};
 		return url;
