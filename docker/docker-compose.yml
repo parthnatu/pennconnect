@@ -1,0 +1,10 @@
+version: '3'
+services:
+  devbox:
+    build:
+      context: ./
+      dockerfile: pennconnect.dockerfile
+    ports:
+      - "8001:80"
+      - "3309:3306"
+
