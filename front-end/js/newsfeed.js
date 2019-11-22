@@ -29,8 +29,7 @@ $(function () {
 				data: JSON.stringify(data),
 				url: getUrl().postcontent,
 				success: function (e) {
-					e.body.forEach(function (item) {
-						
+					e.body.forEach(function (item) {	
 						if(item.text != null && item.fname !=null && item.lname!=null){
 							if (item.text.trim() != "") {
 								$("#newsfeedCards")[0].appendChild(buildCard(item));
@@ -43,7 +42,18 @@ $(function () {
 		}
 
 	}
-
+	/*********************************************************************************************
+	var item = {
+		fname: "Soundarya",
+		lname: "Sundar",
+		user_id: "123",
+		text: "Hello have a nice day",
+		upvotes: 123,
+		downvotes: 23,
+		media_url: "hfgsfg"	
+	};
+	$("#newsfeedCards")[0].appendChild(buildCard(item));
+	*********************************************************************************************/
 	$(window).scroll(function () {
 		var nearToBottom = 100;
 		if ($(window).scrollTop() + $(window).height() > $(document).height() - nearToBottom) {
@@ -57,14 +67,12 @@ $(function () {
 		data: JSON.stringify({user_id : -1 }),
 		success: function (e) {
 			var userDetails = e.body;
-			$("#userCard")[0].appendChild(buildUserCard(userDetails));
+			buildUserCard(userDetails);
 		},
 		error: function (xhr, resp, text) {}
 	});
 	
 	function buildUserCard(userDetails) {
-		var customCardDiv = document.createElement('div');
-		customCardDiv.className = 'card customCard';
 		var customCardHeaderDiv = document.createElement('div');
 		customCardHeaderDiv.className = 'card-header text-center';
 		var img = document.createElement('img');
@@ -112,11 +120,8 @@ $(function () {
 		
 		customCardBodyDiv.appendChild(flexboxDiv);
 		customCardBodyDiv.appendChild(innerDiv);
-		
-		customCardDiv.appendChild(customCardHeaderDiv);
-		customCardDiv.appendChild(customCardBodyDiv);
-		
-		return customCardDiv;
+		$("#userCard")[0].appendChild(customCardHeaderDiv);
+		$("#userCard")[0].appendChild(customCardBodyDiv);		
 	}
 
 	function buildCard(carditem) {
@@ -188,8 +193,67 @@ $(function () {
 
 		var cardFooterDiv = document.createElement('div');
 		cardFooterDiv.className = 'card-header';
+		cardFooterDiv = getComments(carditem.postid, cardFooterDiv);
+		
+		customCardDiv.appendChild(cardHeaderDiv);
+		customCardDiv.appendChild(cardBodyDiv);
+		customCardDiv.appendChild(cardFooterDiv);
+
+		return customCardDiv;
+	}
+	
+	function getComments(postId, cardFooterDiv) {
+		var viewMoreComments = document.createElement('a');
+		viewMoreComments.id = "viewCommentsId";
+		viewMoreComments.className = 'font-weight-normal ml-3';
+		viewMoreComments.innerHTML = 'View more comments';
+		cardFooterDiv.appendChild(viewMoreComments);
+		$.ajax({
+			type: "POST",
+			data: {
+				"post_ids": [postId]
+			},
+			url: getUrl().getcomment,
+			success: function (e) {
+				var comments = e.body;
+				for (int item = 0; item < comments.length; i++) {
+					var commentBlock = createComments(item);
+					cardFooterDiv.appendChild(commentBlock);
+				}
+				cardFooterDiv = addNewCommentsBlock(cardFooterDiv);
+				return cardFooterDiv;
+			},
+			error: function (xhr, resp, text) {
+
+			}
+		});
+	}
+	
+/*	$('#viewCommentsId').on('click', function(e) {
+		$.ajax({
+			type: "POST",
+			data: {
+				"post_ids": [postId]
+			},
+			url: getUrl().getcomment,
+			success: function (e) {
+				var comments = e.body;
+				for (int item = 0; item < comments.length; i++) {
+					var commentBlock = createComments(item);
+					cardFooterDiv.appendChild(commentBlock);
+				}
+				cardFooterDiv = addNewCommentsBlock(cardFooterDiv);
+				return cardFooterDiv;
+			},
+			error: function (xhr, resp, text) {
+
+			}
+		});
+	});*/
+	
+	function addNewCommentsBlock(cardFooterDiv) {
 		var cardFooterFlex = document.createElement('div');
-		cardFooterFlex.className = 'd-flex justify-content-start';
+		cardFooterFlex.className = 'd-flex justify-content-start';		
 		var cardFooterImg = document.createElement('img');
 		cardFooterImg.className = 'rounded-circle';
 		cardFooterImg.src = carditem.media_url;
@@ -197,16 +261,34 @@ $(function () {
 		var cardFooterInput = document.createElement('input');
 		cardFooterInput.className = 'form-control form-control-lg ml-2';
 		cardFooterInput.type = 'Text';
-		cardFooterInput.disabled = 'disabled';
 		cardFooterFlex.appendChild(cardFooterImg);
-		cardFooterFlex.appendChild(cardFooterInput);
-		cardFooterDiv.appendChild(cardFooterFlex);
-
-		customCardDiv.appendChild(cardHeaderDiv);
-		customCardDiv.appendChild(cardBodyDiv);
-		customCardDiv.appendChild(cardFooterDiv);
-
-		return customCardDiv;
+		cardFooterFlex.appendChild(cardFooterInput);	
+		cardFooterDiv.appendChild(cardFooterFlex); 
+		return cardFooterDiv;
+	},
+	
+	function createComments(item) {
+		var cardFooterFlexBig = document.createElement('div');
+		cardFooterFlexBig.className = 'd-flex justify-content-start';
+		var cardFooterImg = document.createElement('img');
+		cardFooterImg.className = 'rounded-circle';
+		cardFooterImg.src = "https://homepages.cae.wisc.edu/~ece533/images/airplane.png";
+		cardFooterImg.style = 'height: 3rem; width: 3rem;';	
+		var cardFooterFlexWithin = document.createElement('div');
+		cardFooterFlexWithin.className = 'd-flex align-items-start flex-column';		
+		var comment = document.createElement('h5');
+		comment.className = "card-text font-weight-normal ml-2";
+		comment.style = 'font-size: 1rem;';
+		comment.innerHTML = "hello";
+		var timestamp = document.createElement('p');
+		timestamp.className = 'font-italic ml-2';
+		timestamp.style = 'font-size: 0.7rem;';
+		timestamp.innerHTML = "timestamp";	
+		cardFooterFlexWithin.appendChild(comment);
+		cardFooterFlexWithin.appendChild(timestamp);	
+		cardFooterFlexBig.appendChild(cardFooterImg);
+		cardFooterFlexBig.appendChild(cardFooterFlexWithin);
+		return cardFooterFlexBig;
 	}
 	
 	$('#friendNameLinkId').on('click', function(e) {
@@ -267,6 +349,7 @@ $(function () {
 			postcontent: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/getpost",
 			createpost: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/post",
 			userdetails: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/userdetails/",
+			getcomment: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/getcomment/",
 			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout"
 		};
 		return url;
