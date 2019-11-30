@@ -29,7 +29,7 @@ $(function () {
 				data: JSON.stringify(data),
 				url: getUrl().postcontent,
 				success: function (e) {
-					e.body.forEach(function (item) {	
+					e.body.forEach(function (item) {
 						if(item.text != null && item.fname !=null && item.lname!=null){
 							if (item.text.trim() != "") {
 								$("#newsfeedCards")[0].appendChild(buildCard(item));
@@ -193,7 +193,8 @@ $(function () {
 
 		var cardFooterDiv = document.createElement('div');
 		cardFooterDiv.className = 'card-header';
-		cardFooterDiv = getComments(carditem.postid, cardFooterDiv);
+		cardFooterDiv.setAttribute("postId", carditem.post_id);
+		getComments(carditem, cardFooterDiv);
 		
 		customCardDiv.appendChild(cardHeaderDiv);
 		customCardDiv.appendChild(cardBodyDiv);
@@ -202,70 +203,91 @@ $(function () {
 		return customCardDiv;
 	}
 	
-	function getComments(postId, cardFooterDiv) {
+	function getComments(carditem, cardFooterDiv) {	
+		var viewMoreCommentsDiv = document.createElement('div');
+		viewMoreCommentsDiv.className = 'd-flex justify-content-start mb-2';
 		var viewMoreComments = document.createElement('a');
-		viewMoreComments.id = "viewCommentsId";
-		viewMoreComments.className = 'font-weight-normal ml-3';
+		viewMoreComments.style = "cursor: pointer;color:#007bff;";
+		$(viewMoreComments).data("carditem", carditem);
+		$(viewMoreComments).data("footerDiv", cardFooterDiv);
+		viewMoreComments.addEventListener('click', function() {			
+			getMoreComments($(viewMoreComments).data("carditem"), $(viewMoreComments).data("footerDiv"));
+		});
 		viewMoreComments.innerHTML = 'View more comments';
-		cardFooterDiv.appendChild(viewMoreComments);
+		viewMoreCommentsDiv.appendChild(viewMoreComments);
+		cardFooterDiv.appendChild(viewMoreCommentsDiv);
 		$.ajax({
 			type: "POST",
-			data: {
-				"post_ids": [postId]
-			},
+			data: JSON.stringify({"post_ids": [carditem.post_id]}),
 			url: getUrl().getcomment,
 			success: function (e) {
-				var comments = e.body;
-				for (int item = 0; item < comments.length; i++) {
-					var commentBlock = createComments(item);
+				var comments = e.body[0];
+				var maxComments = comments.length >= 2 ? 2 : comments.length;
+				for (var item = 0; item < maxComments; item++) {
+					var commentBlock = createComments(comments[item]);
 					cardFooterDiv.appendChild(commentBlock);
 				}
-				cardFooterDiv = addNewCommentsBlock(cardFooterDiv);
-				return cardFooterDiv;
+				addNewCommentsBlock(carditem, cardFooterDiv);
 			},
 			error: function (xhr, resp, text) {
-
+				
 			}
 		});
 	}
 	
-/*	$('#viewCommentsId').on('click', function(e) {
+	function getMoreComments(carditem, cardFooterDiv) {
 		$.ajax({
 			type: "POST",
-			data: {
-				"post_ids": [postId]
-			},
+			data: JSON.stringify({"post_ids": [carditem.post_id]}),
 			url: getUrl().getcomment,
 			success: function (e) {
-				var comments = e.body;
-				for (int item = 0; item < comments.length; i++) {
-					var commentBlock = createComments(item);
-					cardFooterDiv.appendChild(commentBlock);
+				var comments = e.body[0];
+				if (comments.length > 2) {
+					cardFooterDiv.removeChild(cardFooterDiv.children[cardFooterDiv.children.length - 1]);
+					for (var item = 2; item < comments.length; item++) {
+						var commentBlock = createComments(comments[item]);
+						cardFooterDiv.appendChild(commentBlock);
+					}
+					addNewCommentsBlock(carditem, cardFooterDiv);
 				}
-				cardFooterDiv = addNewCommentsBlock(cardFooterDiv);
-				return cardFooterDiv;
+				cardFooterDiv.removeChild(cardFooterDiv.children[0]);
 			},
 			error: function (xhr, resp, text) {
-
+				
 			}
-		});
-	});*/
+		});	
+	}
 	
-	function addNewCommentsBlock(cardFooterDiv) {
+	function addNewCommentsBlock(carditem, cardFooterDiv) {
 		var cardFooterFlex = document.createElement('div');
-		cardFooterFlex.className = 'd-flex justify-content-start';		
+		cardFooterFlex.className = 'd-flex justify-content-start';
+		//cardFooterFlex.style = "align-items: center;";
 		var cardFooterImg = document.createElement('img');
 		cardFooterImg.className = 'rounded-circle';
 		cardFooterImg.src = carditem.media_url;
 		cardFooterImg.style = 'height: 3rem; width: 3rem;';
+		var cardFooterFlexWithin = document.createElement('div');
+		cardFooterFlexWithin.className = 'd-flex bd-highlight';
+		cardFooterFlexWithin.style = "width: 100%;"
 		var cardFooterInput = document.createElement('input');
-		cardFooterInput.className = 'form-control form-control-lg ml-2';
+		cardFooterInput.className = 'form-control form-control-lg p-2 w-100 bd-highlight ml-2';
 		cardFooterInput.type = 'Text';
+		cardFooterFlexWithin.appendChild(cardFooterInput);
+		var sendButton = document.createElement('button');
+		sendButton.className = "btn btn-primary p-2 flex-shrink-1 bd-highlight ml-2";
+		sendButton.type = "submit";
+		sendButton.innerHTML = "Post";
+		$(sendButton).data("carditem", carditem);
+		$(sendButton).data("footerDiv", cardFooterDiv);
+		sendButton.addEventListener('click', function() {	
+			var commentText = this.parentElement.children[0].value;	
+			postComment(commentText, $(sendButton).data("carditem"), $(sendButton).data("footerDiv"));
+		});
+		cardFooterFlexWithin.appendChild(sendButton);
 		cardFooterFlex.appendChild(cardFooterImg);
-		cardFooterFlex.appendChild(cardFooterInput);	
-		cardFooterDiv.appendChild(cardFooterFlex); 
-		return cardFooterDiv;
-	},
+		cardFooterFlex.appendChild(cardFooterFlexWithin);
+		cardFooterDiv.appendChild(cardFooterFlex);
+	}
 	
 	function createComments(item) {
 		var cardFooterFlexBig = document.createElement('div');
@@ -276,14 +298,15 @@ $(function () {
 		cardFooterImg.style = 'height: 3rem; width: 3rem;';	
 		var cardFooterFlexWithin = document.createElement('div');
 		cardFooterFlexWithin.className = 'd-flex align-items-start flex-column';		
-		var comment = document.createElement('h5');
+		var comment = document.createElement('h5');	
 		comment.className = "card-text font-weight-normal ml-2";
 		comment.style = 'font-size: 1rem;';
-		comment.innerHTML = "hello";
+		var text = item.text;
+		comment.innerHTML = JSON.parse(text.replace(/\bNaN\b/g, "null")).comment_text !== null ? JSON.parse(text.replace(/\bNaN\b/g, "null")).comment_text : " ";
 		var timestamp = document.createElement('p');
 		timestamp.className = 'font-italic ml-2';
 		timestamp.style = 'font-size: 0.7rem;';
-		timestamp.innerHTML = "timestamp";	
+		timestamp.innerHTML = item.timestamp;	
 		cardFooterFlexWithin.appendChild(comment);
 		cardFooterFlexWithin.appendChild(timestamp);	
 		cardFooterFlexBig.appendChild(cardFooterImg);
@@ -291,10 +314,28 @@ $(function () {
 		return cardFooterFlexBig;
 	}
 	
-	$('#friendNameLinkId').on('click', function(e) {
-		
-	});
+	function postComment(text, carditem, cardFooterDiv) {
+		//AJAX call to post comment using the postId (from footerDiv) and comment text
+		cardFooterDiv.removeChild(cardFooterDiv.children[cardFooterDiv.children.length - 1]);
+		var commentItem = {
+			text: JSON.stringify({
+				"comment_text": text,
+				"replies": []
+			}),
+			timestamp: "timestamp to be returned"
+		};
+		var commentBlock = createComments(commentItem);
+		cardFooterDiv.appendChild(commentBlock);
+		addNewCommentsBlock(carditem, cardFooterDiv);
+	} 
 
+	$('#formSearch').on('submit', function(e) {
+		e.preventDefault();
+		var searchText = $('#searchInputId').val();
+		//AJAX call for search
+		window.location = '/search.html';
+	});
+	
 	$('#createModalId').on('show.bs.modal', function (e) {
 		var button = $(e.relatedTarget);
 		var dataObj = button.data('post');
@@ -315,12 +356,12 @@ $(function () {
 			text: $('#postTextareaId').val(),
 			timestamp: dformat
 		};
-		console.log(JSON.stringify(data));
 		$.ajax({
 			type: "POST",
 			data: JSON.stringify(data),
 			url: getUrl().createpost,
 			success: function (e) {
+				$("#newsfeedCards")[0].insertBefore(buildCard(item), $("#newsfeedCards")[0].children[0]);
 				$('#createModalId').modal('hide');
 			},
 			error: function (xhr, resp, text) {
