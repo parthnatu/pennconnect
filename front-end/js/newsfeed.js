@@ -107,12 +107,12 @@ $(function () {
 		var innerDiv = document.createElement('div');
 		var groupsLink = document.createElement('a');
 		groupsLink.className = 'font-weight-normal';
-		groupsLink.href = '#';
+		groupsLink.href = '	ADD LINK FOR GROUPS 	';
 		groupsLink.innerHTML = 'Groups';
 		var breakline = document.createElement('br');
 		var eventsLink = document.createElement('a');
 		eventsLink.className = 'font-weight-normal';
-		eventsLink.href = '#';
+		eventsLink.href = 'ADD LINK FOR EVENTS ';
 		eventsLink.innerHTML = 'Events';
 		innerDiv.appendChild(groupsLink);
 		innerDiv.appendChild(breakline);
