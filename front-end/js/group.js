@@ -1,7 +1,6 @@
 $(function () {
 	'use strict'
-    var groupname = $('input[name="groupname"]');
-    var description = $('input[name="description"]'); 
+    var groupname = $('input[name="groupname"]'); 
 	var postsDisplayed = 0;
 	var arrPostIds = [];
 	//tinymeercat385@psu.edu
@@ -13,7 +12,6 @@ $(function () {
 		console.log("going to : "ADD LINK TO GROUP PROFILE")
 		var data = {
 			groupname: $("#inputgroupname").val(),
-			description: $("#inputdescription").val(),
 		};
 		$.ajax({
             type: "POST",
@@ -96,10 +94,6 @@ $(function () {
 		var cardHeaderTitle = document.createElement('h5');
 		cardHeaderTitle.className = 'card-title';
 		cardHeaderTitle.innerHTML = "<a href=\"ADD LINK FOR GROUP DETAILS">"+groupDetails.group_name.charAt(0).toUpperCase()"</a>";
-		var cardHeaderDesc = document.createElement('p');
-		cardHeaderDesc.className = 'font-italic';
-		cardHeaderDesc.style = 'font-size: 0.8rem;';
-		cardHeaderDesc.innerHTML = groupDetails.description;
         var member_status = groupDetails.member_status;
         var htmlContent;
 		if(member_status != null){
@@ -112,9 +106,8 @@ $(function () {
 
 			}
 		}
-        customCardHeaderDiv.appendChild(img);
+        	customCardHeaderDiv.appendChild(img);
 		customCardHeaderDiv.appendChild(cardHeaderTitle);
-		customCardHeaderDiv.appendChild(cardHeaderDesc);
 		
 		var customCardBodyDiv = document.createElement('div');
 		customCardBodyDiv.className = 'card-body';
@@ -134,7 +127,7 @@ $(function () {
 		customCardBodyDiv.appendChild(innerDiv);
 		$("#groupCards")[0].appendChild(customCardHeaderDiv);
 		$("#groupCards")[0].appendChild(customCardBodyDiv);	
-        $("#groupCards").append(htmlContent);	
+        	$("#groupCards").append(htmlContent);	
 	}
     
     function togglemembership(){
