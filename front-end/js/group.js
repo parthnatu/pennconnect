@@ -119,7 +119,7 @@ $(function () {
 		memberDiv.innerHTML = 'Members';
 		var memberCountDiv = document.createElement('div');
 		memberCountDiv.className = 'card-text font-weight-normal';
-		memberCountDiv.innerHTML = userDetails.member_count;;
+		memberCountDiv.innerHTML = groupDetails.member_count;;
 		flexboxDiv.appendChild(memberDiv);
 		flexboxDiv.appendChild(memberCountDiv);
 		
