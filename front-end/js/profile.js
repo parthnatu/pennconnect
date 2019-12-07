@@ -61,11 +61,11 @@ $(function () {
 		}
 		if(data.editable != null){
 			if(data.editable){
-				htmlContent += "<button type=\"button\" class=\"btn btn-secondary btn-sm\">Edit</button>";
+				htmlContent += "<button type=\"button\" class=\"btn btn-secondary btn-sm\" href=\"ADD LINK TO EDIT FORM\">Edit</button>";
 			}
 		}
 		htmlContent += "</div>";
-		htmlContent += "<div class=\"card-body\"><div class=\"d-flex justify-content-between bg-white\"><div class=\"card-text font-weight-normal\">Connections</div><div class=\"card-text font-weight-normal\">"+data.friend_count+"</div></div><div><a href=\"#\" class=\"font-weight-normal\">Groups</a><br/><a href=\"#\" class=\"font-weight-normal\">Events</a></div></div>"
+		htmlContent += "<div class=\"card-body\"><div class=\"d-flex justify-content-between bg-white\"><div class=\"card-text font-weight-normal\">Connections</div><div class=\"card-text font-weight-normal\">"+data.friend_count+"</div></div><div><a href=\"#\" class=\"font-weight-normal\" href=\"ADD LINK TO GROUPS\">Groups</a><br/><a href=\"#\" class=\"font-weight-normal\">Events</a></div></div>"
 		$("#userCard").append(htmlContent);
 
 
@@ -208,18 +208,6 @@ $(function () {
 		return customCardDiv;
 	}
 
-	$("#editform").on('click', function (e) {
-		var url = getUrl().editform;
-		$.ajax({
-			type: "POST",
-			url: url,
-			success: function (e) {},
-			error: function (xhr, resp, text) {
-
-			}
-		});
-	});
-
 	$("#logoutId").on('click', function (e) {
 		var url = getUrl().logout;
 		$.ajax({
@@ -238,7 +226,6 @@ $(function () {
 			postcontent: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/getpost",
 			createpost: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/post",
 			userdetails: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/userdetails",
-			editform: "",                /*Add the link to the edit form*/
 			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout",
 			userposts: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/userposts",
 			togglefriend : "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/toggle_friend"
