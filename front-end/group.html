@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>PennConnect</title>
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link href="css/groups.css" rel="stylesheet">
+      <!-- Bootstrap Date-Picker Plugin -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+   </head>
+   <body>
+      <header>
+         <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+            <a class="navbar-brand mr-auto mr-lg-0" href="index.html">PennConnect</a>
+            <form class="form-inline mb-0" id="formSearch" method="POST">
+               <input id="searchInputId" class="form-control ml-sm-3" type="text" placeholder="Search" aria-label="Search">
+            </form>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse offcanvas-collapse" id="navbarCollapse">
+               <ul class="navbar-nav ml-auto">
+                  <li class="nav-item active">
+                     <a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item dropdown active">
+                     <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Create</a>
+                     <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <button class="dropdown-item" data-target="#createModalId" data-toggle="modal" data-create="post">Post</button>
+                        <a class="dropdown-item" href="#">Group</a>
+                        <a class="dropdown-item" href="#">Event</a>
+                     </div>
+                  </li>
+                  <li class="nav-item active">
+                     <a class="nav-link" href="#">Profile</a>
+                  </li>
+                  <li class="nav-item active">
+                     <a id="logoutId" class="nav-link" href="#">Logout</a>
+                  </li>
+               </ul>
+            </div>
+         </nav>
+      </header>
+      <div class="modal fade" id="createModalId" tabindex="-1" role="dialog" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form>
+                     <textarea id="postTextareaId" class="form-control" placeholder="Type your post here" style="height: 12rem;"></textarea>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button id="createPostBtn" class="btn btn-lg btn-primary btn-block">Post</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div id="container" class="container cardContainer">
+         <div class="row">
+            <div class="col-3">
+               <div class="card customCard" id="userCard">
+               </div>
+            </div>
+            <div id="groupCards" class="col-9">	
+            </div>
+         </div>
+      </div>
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+      <script src="js/group.js" charset="UTF-8"></script>
+   </body>
+</html>
