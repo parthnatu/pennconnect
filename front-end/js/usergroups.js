@@ -155,7 +155,9 @@ $(function () {
 			userdetails: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/userdetails",
 			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout",
 			userposts: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/userposts",
-			togglefriend : "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/toggle_friend"
+			togglefriend : "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/toggle_friend",
+			usergroups: "",
+			listgroups: ""
 		};
 		return url;
 	}
