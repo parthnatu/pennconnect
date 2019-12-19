@@ -30,7 +30,7 @@ $(document).ready(function()  {
             data: JSON.stringify(data),
             success: function () {
 				$('#formSignUp').get(0).reset();
-                window.location = '../newsfeed/index.html';
+                window.location = '"http://pennconnect.duckdns.org:8000"';
             },
 			error: function(xhr, resp, text) {
 				

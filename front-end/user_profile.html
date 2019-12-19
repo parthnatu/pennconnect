@@ -13,9 +13,9 @@
 	<body>
 		<header>
 			<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-				<a class="navbar-brand mr-auto mr-lg-0" href="index.php">PennConnect</a>
-				<form class="form-inline">
-					<input class="form-control ml-sm-3" type="text" placeholder="Search" aria-label="Search">
+				<a class="navbar-brand mr-auto mr-lg-0" href="http://pennconnect.duckdns.org:8000">PennConnect</a>
+				<form class="form-inline mb-0" id="formSearch" method="POST">
+					<input id="searchInputId" class="form-control ml-sm-3" type="text" placeholder="Search" aria-label="Search">
 				</form>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -23,18 +23,18 @@
 				<div class="navbar-collapse offcanvas-collapse" id="navbarCollapse">
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item active">
-							<a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
+							<a class="nav-link" href="http://pennconnect.duckdns.org:8000/newsfeed.html">Dashboard <span class="sr-only">(current)</span></a>
 						</li>
 						<li class="nav-item dropdown active">
 							<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Create</a>
 							<div class="dropdown-menu" aria-labelledby="dropdown01">
-								<a class="dropdown-item" href="#">Post</a>
-								<a class="dropdown-item" href="#">Group</a>
-								<a class="dropdown-item" href="#">Event</a>
+								<button class="dropdown-item" data-target="#createPostModal" data-toggle="modal" data-create="post">Post</button>
+                        		<button class="dropdown-item" data-target="#createGroupModal" data-toggle="modal" data-create="post">Group</button>
+								<button class="dropdown-item" data-target="#createEventModal" data-toggle="modal" data-create="post">Event</button>
 							</div>
 						</li>
 						<li class="nav-item active">
-							<a class="nav-link" href="#">Profile</a>
+							<a class="nav-link" href="http://pennconnect.duckdns.org:8000/user_profile.html?user_id=-1">Profile</a>
 						</li>
 						<li class="nav-item active">
 							<a class="nav-link" href="#">Logout</a>
@@ -43,6 +43,46 @@
 				</div>
 			</nav>
 		</header>
+		<div class="modal fade" id="createPostModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+			   <div class="modal-content">
+				  <div class="modal-header">
+					 <h5 class="modal-title" id="exampleModalLabel"></h5>
+					 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					 <span aria-hidden="true">&times;</span>
+					 </button>
+				  </div>
+				  <div class="modal-body">
+					 <form>
+						<textarea id="postTextareaId" class="form-control" placeholder="Type your post here" style="height: 12rem;"></textarea>
+					 </form>
+				  </div>
+				  <div class="modal-footer">
+					 <button id="createPostBtn" class="btn btn-lg btn-primary btn-block">Post</button>
+				  </div>
+			   </div>
+			</div>
+		 </div>
+		<div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+			   <div class="modal-content">
+				  <div class="modal-header">
+					 <h5 class="modal-title" id="exampleModalLabel"></h5>
+					 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					 <span aria-hidden="true">&times;</span>
+					 </button>
+				  </div>
+				  <div class="modal-body">
+					 <form>
+						<input type="text" id="groupNameId" class="form-control" placeholder="Enter group name"></textarea>
+					 </form>
+				  </div>
+				  <div class="modal-footer">
+					 <button id="createGroupBtnId" class="btn btn-lg btn-primary btn-block">Post</button>
+				  </div>
+			   </div>
+			</div>
+		 </div>
 		<div class="container cardContainer">
 
 			<div class="row">

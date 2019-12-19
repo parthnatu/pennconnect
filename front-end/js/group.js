@@ -1,17 +1,31 @@
 $(function () {
 	'use strict'
-    var groupname = $('input[name="groupname"]'); 
+    var groupname = $('input[name="groupname"]');
+    var description = $('input[name="description"]'); 
 	var postsDisplayed = 0;
+	var groupID = location.search.split('group_id=')[1];
 	var arrPostIds = [];
 	//tinymeercat385@psu.edu
 	//passwd
-    
+	function toggleMembership(){
+		$.ajax({
+			type: "POST",
+			data: JSON.stringify({group_id : groupID}),
+			url: getUrl().togglemembership,
+			success: function (e) {
+				location.reload();
+			},
+			error: function(xhr, resp, text) {
+				console.log(xhr);
+			}
+		});
+	}
     $("#formcreategroup").on("submit", function (e) {
 		e.preventDefault();
 		console.log("clicked on create group");
-		console.log("going to : "ADD LINK TO GROUP PROFILE")
 		var data = {
 			groupname: $("#inputgroupname").val(),
+			description: $("#inputdescription").val(),
 		};
 		$.ajax({
             type: "POST",
@@ -29,10 +43,12 @@ $(function () {
     
 	$.ajax({
 		type: "POST",
+		data: JSON.stringify({group_id: groupID}),
 		url: getUrl().get_group_posts,
 		success: function (e) {
 			arrPostIds = e.body;
 			getPostContent();
+			buildGroupCard();
 		},
 		error: function (xhr, resp, text) {}
 	});
@@ -55,7 +71,7 @@ $(function () {
 					e.body.forEach(function (item) {
 						if(item.text != null && item.fname !=null && item.lname!=null){
 							if (item.text.trim() != "") {
-								$("#groupCards")[0].appendChild(buildGroupCard(item));
+								$("#groupCards")[0].appendChild(buildCard(item));
 							}
 						}
 					});
@@ -76,15 +92,19 @@ $(function () {
 	$.ajax({
 		type: "POST",
 		url: getUrl().groupdetails,
-		data: JSON.stringify({group_id : -1 }),
+		data: JSON.stringify({group_id : groupID }),
 		success: function (e) {
 			var groupDetails = e.body;
+			console.log(e);
 			buildGroupCard(groupDetails);
+			document.getElementById ("btn-member").addEventListener ("click", toggleMembership, false);
+
 		},
 		error: function (xhr, resp, text) {}
 	});
 	
 	function buildGroupCard(groupDetails) {
+		console.log(groupDetails);
 		var customCardHeaderDiv = document.createElement('div');
 		customCardHeaderDiv.className = 'card-header text-center';
 		var img = document.createElement('img');
@@ -93,21 +113,25 @@ $(function () {
 		img.style = 'height: 5rem; width: 5rem;';
 		var cardHeaderTitle = document.createElement('h5');
 		cardHeaderTitle.className = 'card-title';
-		cardHeaderTitle.innerHTML = "<a href=\"ADD LINK FOR GROUP DETAILS">"+groupDetails.group_name.charAt(0).toUpperCase()"</a>";
-        var member_status = groupDetails.member_status;
-        var htmlContent;
+		cardHeaderTitle.innerHTML = groupDetails.group_name;
+		var cardHeaderDesc = document.createElement('p');
+		cardHeaderDesc.className = 'font-italic';
+		cardHeaderDesc.style = 'font-size: 0.8rem;';
+        var member_status = groupDetails.is_member;
+        var htmlContent = "";
 		if(member_status != null){
 			if(member_status){
-				htmlContent += "<button id=\"btn-member\" type=\"button\" onclick=\"togglemembership()\" class=\"btn btn-success btn-sm\">Member ✓</button>";
+				htmlContent += "<button id=\"btn-member\" type=\"button\" onclick=\"toggleMembership()\" class=\"btn btn-success btn-sm\">Member ✓</button>";
 				
 			}
 			else{
-				htmlContent += "<button id=\"btn-member\" type=\"button\" onclick=\"togglemembership()\" class=\"btn btn-danger btn-sm\">Member x</button>";
+				htmlContent += "<button id=\"btn-member\" type=\"button\" onclick=\"toggleMembership()\" class=\"btn btn-danger btn-sm\">Member x</button>";
 
 			}
 		}
-        	customCardHeaderDiv.appendChild(img);
+        customCardHeaderDiv.appendChild(img);
 		customCardHeaderDiv.appendChild(cardHeaderTitle);
+		customCardHeaderDiv.appendChild(cardHeaderDesc);
 		
 		var customCardBodyDiv = document.createElement('div');
 		customCardBodyDiv.className = 'card-body';
@@ -124,21 +148,10 @@ $(function () {
 		flexboxDiv.appendChild(memberCountDiv);
 		
 		customCardBodyDiv.appendChild(flexboxDiv);
-		customCardBodyDiv.appendChild(innerDiv);
-		$("#groupCards")[0].appendChild(customCardHeaderDiv);
-		$("#groupCards")[0].appendChild(customCardBodyDiv);	
-        	$("#groupCards").append(htmlContent);	
-	}
-    
-    function togglemembership(){
-		$.ajax({
-			type: "POST",
-			data: JSON.stringify({friend_user_id : group_id}),
-			url: getUrl().togglemembership,
-			success: function (e) {
-				location.reload();
-			}
-		});
+		//customCardBodyDiv.appendChild(innerDiv);
+		$("#groupCard")[0].appendChild(customCardHeaderDiv);
+		$("#groupCard")[0].appendChild(customCardBodyDiv);	
+        $("#groupCard").append(htmlContent);	
 	}
 
 	function buildCard(carditem) {
@@ -244,7 +257,7 @@ $(function () {
 		$.ajax({
 			type: "POST",
 			data: JSON.stringify(data),
-			url: getUrl().editpost,
+			url: getUrl().editgrouppost,
 			success: function (e) {
 				if (edit_columns === "upvotes") {
 					voteLink.data("upVotes", voteLink.data("upVotes") + 1);
@@ -417,7 +430,7 @@ $(function () {
 		window.location = '/search.html';
 	});
 	
-	$('#createModalId').on('show.bs.modal', function (e) {
+	$('#createPostModal').on('show.bs.modal', function (e) {
 		var button = $(e.relatedTarget);
 		var dataObj = button.data('post');
 		var modal = $(this);
@@ -443,10 +456,39 @@ $(function () {
 			url: getUrl().createpost,
 			success: function (e) {
 				$("#groupCards")[0].insertBefore(buildCard(item), $("#groupCards")[0].children[0]);
-				$('#createModalId').modal('hide');
+				$('#createPostModal').modal('hide');
 			},
 			error: function (xhr, resp, text) {
+			}
+		});
+	});
 
+	$('#createGroupBtnId').on('click',function(e){
+		var groupName = $('#groupNameId').val();
+		$.ajax({
+			type: "POST",
+			data: JSON.stringify({group_name : groupName}),
+			url: getUrl().creategroup,
+			success: function (e) {
+				$('#createGroupModal').modal('hide');
+				alert('Group created!');
+			},
+			error: function (xhr, resp, text) {
+			}
+		});
+	});
+
+	$('#createEventBtnId').on('click',function(e){
+		var eventName = $('#eventNameId').val();
+		$.ajax({
+			type: "POST",
+			data: JSON.stringify({event_name : eventName}),
+			url: getUrl().createevent,
+			success: function (e) {
+				$('#createEventModal').modal('hide');
+				alert('Event created!');
+			},
+			error: function (xhr, resp, text) {
 			}
 		});
 	});
@@ -467,15 +509,16 @@ $(function () {
 
 	function getUrl() {
 		var url = {
-			get_group_posts: "",
-            get_group_post_data: "",
+			get_group_posts: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/get_group_posts",
+            get_group_post_data: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/get_group_post_data",
 			createpost: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/post",
-			groupdetails: "",
-            togglemembership: "",
+			groupdetails: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/getgroupdetails",
+            togglemembership: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/togglemembership",
 			getcomment: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/getcomment/",
 			createcomment: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/create_comment/",
-			editpost: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/editpost/",
-			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout"
+			editgrouppost: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/editgrouppost/",
+			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout",
+			creategroup: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/creategroup"
 		};
 		return url;
 	}

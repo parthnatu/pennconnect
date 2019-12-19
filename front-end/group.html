@@ -14,7 +14,7 @@
    <body>
       <header>
          <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-            <a class="navbar-brand mr-auto mr-lg-0" href="index.html">PennConnect</a>
+            <a class="navbar-brand mr-auto mr-lg-0" href="http://pennconnect.duckdns.org:8000">PennConnect</a>
             <form class="form-inline mb-0" id="formSearch" method="POST">
                <input id="searchInputId" class="form-control ml-sm-3" type="text" placeholder="Search" aria-label="Search">
             </form>
@@ -29,13 +29,13 @@
                   <li class="nav-item dropdown active">
                      <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Create</a>
                      <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        <button class="dropdown-item" data-target="#createModalId" data-toggle="modal" data-create="post">Post</button>
-                        <a class="dropdown-item" href="#">Group</a>
-                        <a class="dropdown-item" href="#">Event</a>
+                        <button class="dropdown-item" data-target="#createPostModal" data-toggle="modal" data-create="post">Post</button>
+                        <button class="dropdown-item" data-target="#createGroupModal" data-toggle="modal" data-create="post">Group</button>
+                        <button class="dropdown-item" data-target="#createEventModal" data-toggle="modal" data-create="post">Event</button>
                      </div>
                   </li>
                   <li class="nav-item active">
-                     <a class="nav-link" href="#">Profile</a>
+                     <a class="nav-link" href="http://pennconnect.duckdns.org:8000/user_profile.html?user_id=-1">Profile</a>
                   </li>
                   <li class="nav-item active">
                      <a id="logoutId" class="nav-link" href="#">Logout</a>
@@ -44,7 +44,7 @@
             </div>
          </nav>
       </header>
-      <div class="modal fade" id="createModalId" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal fade" id="createPostModal" tabindex="-1" role="dialog" aria-hidden="true">
          <div class="modal-dialog" role="document">
             <div class="modal-content">
                <div class="modal-header">
@@ -64,10 +64,30 @@
             </div>
          </div>
       </div>
+      <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form>
+                     <input type="text" id="groupNameId" class="form-control" placeholder="Enter group name"></textarea>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button id="createGroupBtnId" class="btn btn-lg btn-primary btn-block">Post</button>
+               </div>
+            </div>
+         </div>
+      </div>
       <div id="container" class="container cardContainer">
          <div class="row">
             <div class="col-3">
-               <div class="card customCard" id="userCard">
+               <div class="card customCard" id="groupCard">
                </div>
             </div>
             <div id="groupCards" class="col-9">	

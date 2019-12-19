@@ -3,7 +3,7 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>PennConnect: User's Groups</title>
+		<title>PennConnect: User's Events</title>
 		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<link href="css/profile.css" rel="stylesheet">	
@@ -15,7 +15,7 @@
 			<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
 				<a class="navbar-brand mr-auto mr-lg-0" href="http://pennconnect.duckdns.org:8000">PennConnect</a>
 				<form class="form-inline mb-0" id="formSearch" method="POST">
-					<input class="form-control ml-sm-3" id="searchInputId" type="text" placeholder="Search" aria-label="Search">
+					<input id="searchInputId" class="form-control ml-sm-3" type="text" placeholder="Search" aria-label="Search">
 				</form>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -82,10 +82,30 @@
 				  </div>
 			   </div>
 			</div>
+        </div>
+        <div class="modal fade" id="createEventModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+			   <div class="modal-content">
+				  <div class="modal-header">
+					 <h5 class="modal-title" id="exampleModalLabel"></h5>
+					 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					 <span aria-hidden="true">&times;</span>
+					 </button>
+				  </div>
+				  <div class="modal-body">
+					 <form>
+						<input type="text" id="eventNameId" class="form-control" placeholder="Enter event name"></textarea>
+					 </form>
+				  </div>
+				  <div class="modal-footer">
+					 <button id="createEventBtnId" class="btn btn-lg btn-primary btn-block">Post</button>
+				  </div>
+			   </div>
+			</div>
 		</div>
 		<div class="container cardContainer">
 			<div class="row">
-				<h2>User Groups</h2>
+				<h2>User Events</h2>
 			</div>
 			<div class="row">
 				<div class="col-12">
@@ -94,7 +114,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div id="groupCards" class="col-12">	
+				<div id="eventCards" class="col-12">	
 				</div>
 			</div>
 		</div>
@@ -105,6 +125,6 @@
 			<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 			<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
-			<script src="js/usergroups.js" charset="UTF-8"></script>
+			<script src="js/userevents.js" charset="UTF-8"></script>
 	</body>
 </html>

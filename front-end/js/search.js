@@ -1,67 +1,97 @@
 $(function () {
 	'use strict'
-	var searchResults = [{
-		type: "profile",
-		fname: "soundarya",
-		lname: "sundar",
-		email: "nslallu@gmail.com",
-		friend_count: "1120",
-		graduation_year: "2021",
-		user_id: "121"
-	}, {
-		type: "group",
-		group_name: "Soundarya's Friends",
-		members: "23",
-		owner: "Soundarya",
-		group_id: "1"
-	}, {
-		type: "event",
-		event_name: "Soundarya's events",
-		going: "20",
-		interested: "40",
-		owner: "Micheal",
-		event_id: "2"
-	}, {
-		type: "profile",
-		fname: "sound",
-		lname: "war",
-		email: "dskb@gmail.com",
-		friend_count: "10",
-		graduation_year: "2018",
-		user_id: "23"
-	}, {
-		type: "group",
-		group_name: "Sound's Friends",
-		members: "23",
-		owner: "Sound",
-		group_id: "21"
-	}, {
-		type: "event",
-		event_name: "Sound's events",
-		going: "64",
-		interested: "34",
-		owner: "Hershey",
-		event_id: "90"
-	}];
-	
-	//AJAX calls to get the search results
-	
-	searchResults.forEach(function(item) {
-		switch(item.type) {
-			case "profile":
-				var profile = buildProfileItem(item);
-				$("#profileCardCustomBody")[0].appendChild(profile);
-			break;
-			case "group":
-				var group = buildGroupItem(item);
-				$("#groupsCardCustomBody")[0].appendChild(group);			
-			break;
-			case "event":
-				var event = buildEventItem(item);
-				$("#eventsCardCustomBody")[0].appendChild(event);
-			break;
+	var searchEventsNum = 0;
+	var searchGroupsNum = 0;
+	var searchProfilesNum = 0;
+	$.ajax({
+		type: "POST",
+		data: JSON.stringify({
+			"search_string": window.location.search.split("=")[1]
+		}),
+		url: getUrl().search,
+		success: function (e) {
+			if (e.body.length > 1) {
+				e.body.forEach(function(results) {
+					populateSearch(results);
+				});
+			} else {
+				populateSearch(e.body[0]);
+			}
+			if (searchProfilesNum == 0) {	
+				var noProfileResultText = document.createElement('p');
+				noProfileResultText.className = 'font-italic';
+				noProfileResultText.style = 'font-size: 0.8rem; margin-bottom: 0rem;';	
+				noProfileResultText.innerHTML = "No matching profiles found";
+				$("#profileCardCustomBody")[0].appendChild(noProfileResultText);
+			}
+			if (searchGroupsNum == 0) {
+				var noGroupResultText = document.createElement('p');
+				noGroupResultText.className = 'font-italic';
+				noGroupResultText.style = 'font-size: 0.8rem; margin-bottom: 0rem;';
+				noGroupResultText.innerHTML = "No matching groups found";
+				$("#groupsCardCustomBody")[0].appendChild(noGroupResultText);
+			}
+			if (searchEventsNum == 0) {
+				var noEventResultText = document.createElement('p');
+				noEventResultText.className = 'font-italic';
+				noEventResultText.style = 'font-size: 0.8rem; margin-bottom: 0rem;';
+				noEventResultText.innerHTML = "No matching events found";
+				$("#eventsCardCustomBody")[0].appendChild(noEventResultText);
+			}
+		},
+		error: function (xhr, resp, text) {
+			var noProfileResultText = document.createElement('p');
+			noProfileResultText.className = 'font-italic';
+			noProfileResultText.style = 'font-size: 0.8rem; margin-bottom: 0rem;';	
+			noProfileResultText.innerHTML = "No matching profiles found";
+			$("#profileCardCustomBody")[0].appendChild(noProfileResultText);
+			var noGroupResultText = document.createElement('p');
+			noGroupResultText.className = 'font-italic';
+			noGroupResultText.style = 'font-size: 0.8rem; margin-bottom: 0rem;';
+			noGroupResultText.innerHTML = "No matching groups found";
+			$("#groupsCardCustomBody")[0].appendChild(noGroupResultText);
+			var noEventResultText = document.createElement('p');
+			noEventResultText.className = 'font-italic';
+			noEventResultText.style = 'font-size: 0.8rem; margin-bottom: 0rem;';
+			noEventResultText.innerHTML = "No matching events found";
+			$("#eventsCardCustomBody")[0].appendChild(noEventResultText);
 		}
 	});
+	$('#createGroupBtnId').on('click',function(e){
+		var groupName = $('#groupNameId').val();
+		$.ajax({
+			type: "POST",
+			data: JSON.stringify({group_name : groupName}),
+			url: getUrl().creategroup,
+			success: function (e) {
+				$('#createGroupModal').modal('hide');
+				alert('Group created!');
+			},
+			error: function (xhr, resp, text) {
+			}
+		});
+	});
+	function populateSearch(searchResults) {
+		searchResults.forEach(function(item) {
+			switch(item.object_type) {
+				case "user":
+					var profile = buildProfileItem(item);
+					searchProfilesNum++;
+					$("#profileCardCustomBody")[0].appendChild(profile);
+				break;
+				case "group":
+					var group = buildGroupItem(item);
+					searchGroupsNum++;
+					$("#groupsCardCustomBody")[0].appendChild(group);			
+				break;
+				case "event":
+					var event = buildEventItem(item);
+					searchEventsNum++;
+					$("#eventsCardCustomBody")[0].appendChild(event);
+				break;
+			}
+		});
+	}
 		
 	function buildProfileItem(item) {
 		var customCardDivProfile = document.createElement('div');
@@ -150,7 +180,7 @@ $(function () {
 		var nameLink = document.createElement('a');
 		nameLink.id = "friendNameLinkId";
 		nameLink.className = 'card-text font-weight-normal';
-		nameLink.innerHTML = "<a href=\"http://pennconnect.duckdns.org:8000/user_profile.html?user_id="+item.event_id+"\">"+item.group_name+"</a>";
+		nameLink.innerHTML = "<a href=\"http://pennconnect.duckdns.org:8000/user_profile.html?group_id="+item.group_id+"\">"+item.group_name+"</a>";
 		cardHeaderNameFlexGroup.appendChild(nameLink);
 		cardHeaderFlexGroup.appendChild(img);
 		cardHeaderFlexGroup.appendChild(cardHeaderNameFlexGroup);
@@ -162,24 +192,12 @@ $(function () {
 		membersDiv.innerHTML = 'Members';
 		var membersCountDiv = document.createElement('div');
 		membersCountDiv.className = 'card-text font-weight-normal';
-		membersCountDiv.innerHTML = item.members;
+		membersCountDiv.innerHTML = item.event_member_count;
 		flexboxMembersDiv.appendChild(membersDiv);
-		flexboxMembersDiv.appendChild(membersCountDiv);
-		
-		var flexboxOwnerDiv = document.createElement('div');
-		flexboxOwnerDiv.className = 'd-flex justify-content-between bg-white';
-		var ownerDiv = document.createElement('div');
-		ownerDiv.className = 'card-text font-weight-normal';
-		ownerDiv.innerHTML = 'Owner';
-		var ownerNameDiv = document.createElement('div');
-		ownerNameDiv.className = 'card-text font-weight-normal';
-		ownerNameDiv.innerHTML = item.owner;
-		flexboxOwnerDiv.appendChild(ownerDiv);
-		flexboxOwnerDiv.appendChild(ownerNameDiv);		
+		flexboxMembersDiv.appendChild(membersCountDiv);	
 		
 		customCardBodyDivGroup.appendChild(cardHeaderFlexGroup);
 		customCardBodyDivGroup.appendChild(flexboxMembersDiv);
-		customCardBodyDivGroup.appendChild(flexboxOwnerDiv);
 		customCardDivGroup.appendChild(customCardBodyDivGroup);	
 		return customCardDivGroup;
 	}
@@ -203,7 +221,7 @@ $(function () {
 		var nameLink = document.createElement('a');
 		nameLink.id = "friendNameconnectionsDivLinkId";
 		nameLink.className = 'card-text font-weight-normal';
-		nameLink.innerHTML = "<a href=\"http://pennconnect.duckdns.org:8000/user_profile.html?user_id="+item.group_id+"\">"+item.event_name+"</a>";
+		nameLink.innerHTML = "<a href=\"http://pennconnect.duckdns.org:8000/user_profile.html?event_id="+item.event_id+"\">"+item.event_name+"</a>";
 		cardHeaderNameFlexEvent.appendChild(nameLink);
 		cardHeaderFlexEvent.appendChild(img);
 		cardHeaderFlexEvent.appendChild(cardHeaderNameFlexEvent);		
@@ -217,23 +235,40 @@ $(function () {
 		membersCountDiv.className = 'card-text font-weight-normal';
 		membersCountDiv.innerHTML = item.going;
 		flexboxMembersDiv.appendChild(membersDiv);
-		flexboxMembersDiv.appendChild(membersCountDiv);
-		
-		var flexboxOwnerDiv = document.createElement('div');
-		flexboxOwnerDiv.className = 'd-flex justify-content-between bg-white';
-		var ownerDiv = document.createElement('div');
-		ownerDiv.className = 'card-text font-weight-normal';
-		ownerDiv.innerHTML = 'Owner';
-		var ownerNameDiv = document.createElement('div');
-		ownerNameDiv.className = 'card-text font-weight-normal';
-		ownerNameDiv.innerHTML = item.owner;
-		flexboxOwnerDiv.appendChild(ownerDiv);
-		flexboxOwnerDiv.appendChild(ownerNameDiv);		
+		flexboxMembersDiv.appendChild(membersCountDiv);	
 		
 		customCardBodyDivEvent.appendChild(cardHeaderFlexEvent);
 		customCardBodyDivEvent.appendChild(flexboxMembersDiv);
-		customCardBodyDivEvent.appendChild(flexboxOwnerDiv);
 		customCardDivEvent.appendChild(customCardBodyDivEvent);	
 		return customCardDivEvent;
+	}
+
+	$('#formSearch').on('submit', function(e) {
+		e.preventDefault();
+		var searchText = $('#searchInputId').val();
+		$('#searchInputId').value = "";
+		window.location = '/search.html?searchText=' + searchText;
+	});
+
+	$("#logoutId").on('click', function (e) {
+		var url = getUrl().logout;
+		$.ajax({
+			type: "POST",
+			url: url,
+			success: function (e) {
+				location.href = "http://pennconnect.duckdns.org:8000"
+			},
+			error: function (xhr, resp, text) {
+
+			}
+		});
+	});
+
+	function getUrl() {
+		var url = {
+			search: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/search/",
+			logout: "http://pennconnect.duckdns.org:8000/api-gateway.php/penn-connect/logout"
+		};
+		return url;
 	}
 });
